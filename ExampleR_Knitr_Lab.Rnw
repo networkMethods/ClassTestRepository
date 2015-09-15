@@ -1,0 +1,412 @@
+\documentclass{article}
+\usepackage{fancyhdr}          % this and next line are for fancy headers/footers
+\pagestyle{fancy}
+\usepackage{url}               % used in bibliography
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Lab 1: R Studio, knitr and review of R}
+\date{\today}
+\author{YOUR NAME HERE}
+
+
+
+
+\begin{document}
+\maketitle
+\clearpage
+
+<<echo=FALSE,include=FALSE>>=
+## Add any libraries you need here in the header
+options(prompt="R > ")
+options(width=65)
+opts_chunk$set(comment = NA)
+opts_chunk$set(background='white')
+opts_chunk$set(tidy=TRUE)
+opts_chunk$set(highlight=TRUE)
+opts_chunk$set(fig.align = "center")
+#knit_theme$set("seashell")
+@
+
+\section*{Resources}
+This website has good handout on how to install and use $knitr$ and Rstudio for building reports.\\
+
+\noindent
+\url{http://www.r-bloggers.com/using-r-in-latex-with-knitr-and-rstudio/}
+
+\noindent
+\url{http://www.rstudio.com/}
+
+\subsection*{On Moodle}
+This document will help you with typing up your homework. Latex is a good typesetting program which handles mathematical equations at arbitrary sophistication. Your homework and take home exam must be written in a combination of \LaTeX and knitr/sweave (an add-on to which allows you inset your R code into the document).\\
+
+\emph{The Not So Short Introduction to \LaTeX} (lshort.pdf)
+
+
+\section*{Lab \# 1 Assignment: To be Turned in on 09/12/2014 via Moodle}
+
+It is expected that each individual will install {\tt R} and run through a ``\LaTeX introduction", ``A Brief Reminder of Univariate Statistics with R", and ``A Brief Introduction to R Commands" on their own machine. They will produce a .pdf using RStudio, which they can save and upload to Moodle under \textbf{Lab\#1}. 
+
+
+\section*{What is R}
+
+{\tt R} is a free software programming language and environment developed originally as the S programming language by Bell Labs. {\tt R} is maintained by the R-Core team (for details see \url{http://www.r-project.org/}) and has in recent years become the preferred tool for statistical data analysis by statisticians. 
+
+\section*{Installing R}
+
+To install the latest version of R go to \url{http://www.r-project.org/} and select \textbf{Download R}. On the next page scroll down and select \url{http://cran.mtu.edu/} as your preferred download location (note you can of course go directly to aforementioned website). Next, select your operating system (e.g., OS X or Windows). For Windows, click on \textbf{install R for the first time} and then click on \textbf{Download R 3.0.1 for Windows}. For OS X, click the first link under the headline ``Files:" (e.g., \textbf{R-3.0.1.pkg}). \underline{Remember} If you have any trouble installing R on your laptop you can always come into office hours.
+
+\section*{Installing RStudio}
+
+To install RStudio go to \url{http://www.rstudio.com/}. Click on the link below ``If you run R on your desktop:" and then download the RStudio under ``Recommended For Your System" (e.g., \textbf{RStudio 0.97.551 - Mac OS X 10.6+ (64-bit)}).
+
+\section*{Installing Additional Packages in R}
+
+Here we will introduce you to installing additional packages for the 
+R statistical language. The example here will be the 
+\underline{required} package {\tt knitr}, which contains all the 
+necessary tools to write up your document in a combination of 
+\emph{Sweave} and \LaTeX. To install packages in R the command 
+{\tt install.packages} is used within the command line prompt 
+$>$. To install the package {\tt knitr} you type in: 
+
+<<eval=FALSE>>=
+install.packages("knitr")
+@
+
+\noindent
+{\tt R} will then prompt you to choose your ``download mirror." I recommend choosing USA (MI), which will facilitate downloading the package onto your system from the near by state of Michigan. As always, if you have trouble installing packages it is recommended that you bring your laptop to office hour.
+
+
+\section*{\LaTeX Introduction}
+
+\subsection*{Installation}
+
+\begin{itemize}
+\item MikTex \url{http://miktex.org/}
+\item MacTex \url{https://tug.org/mactex/}
+\begin{itemize}
+\item TexShop \url{http://pages.uoregon.edu/koch/texshop/}
+\end{itemize}
+\end{itemize}
+
+\subsection*{Problem Set}
+
+Writing \LaTeX is fairly simple, but it is a sophisticated mark-up language like XML (in someways). Below are a series of exercises (using the Not To Short Introduction to \LaTeX):
+
+\begin{enumerate}
+\item Write up the expression for the sample mean and sample variance.
+\item Write up the expression for a discrete expectation ($E(X)$).
+\item Write up the expression for the Binomial distribution.
+\end{enumerate}
+
+\section*{A Brief Reminder of Univariate Statistics with R}
+\label{homework}
+
+Brief review of the standard \underline{sample} statistics: mean, standard deviation, variance, and confidence intervals; and the Normal distribution. Given a that $x_i$, $i=1,\dots, n$, is drawn from a \emph{simple random sample}. This lab will use an example from the {\tt Sleuth3} library, \emph{Darwin's Data} which is composed of a two-column matrix comprised of the height of Cross and Self fertilized plants. The first column is \emph{Cross}, for cross-fertilized, and the second column is \emph{Self} for self-fertilized.
+
+
+First we will load the necessary libraries and data in {\tt R}. Note that after loading the data, we will run {\tt head} function to view a small portion of the matrix and then we will run {\tt summary} to get a brief breakdown of the data.
+<<eval=FALSE>>=
+install.packages("Sleuth3")
+@
+
+<<>>=
+library(Sleuth3)
+data(ex0428) ## Load's Darwin's plant data
+head(ex0428)
+summary(ex0428)
+@
+
+
+\noindent
+Sample Mean:
+\begin{align*}
+\bar{X} = \frac{1}{n} \sum_{i=1}^n x_i = \frac{x_1+x_2+\dots+x_n}{n}
+\end{align*}
+
+<<>>=
+sum(ex0428$Cross)/length(ex0428$Cross)
+mean(ex0428$Cross) ## built in function
+mean(ex0428$Self)  
+@
+
+\noindent
+Sample Variance (unbiased):
+\begin{align*}
+s^2= \frac{1}{n-1} \sum_{i=1}^n (x_i-\bar{X})^2
+\end{align*}
+
+<<>>=
+sum((ex0428$Cross-mean(ex0428$Cross))^2)/(length(ex0428$Cross)-1)
+s<-var(ex0428$Cross) ## Built in function
+s
+var(ex0428$Self)
+@
+
+\noindent
+Sample Standard Deviation:
+\begin{align*}
+s= \sqrt{s^2}
+\end{align*}
+
+<<>>=
+sqrt(s)
+sd(ex0428$Cross)
+sd(ex0428$Self)
+@
+
+\noindent
+Z Distribution (the Normal Distribution with mean 0 and standard deviation 1):
+<<fig=TRUE>>=
+curve(dnorm(x),-5,5)
+@
+
+\noindent
+95\% Confidence Interval:
+<<>>=
+error<-qnorm(0.975)*sd(ex0428$Cross)/sqrt(length(ex0428$Cross))
+left<-mean(ex0428$Cross)-error
+left
+right<-mean(ex0428$Cross)+error
+right
+@
+
+
+\section*{A Brief Introduction to R Commands}
+
+The following section is taken from ``The World's Shortest R Tutorial"\footnote{Originally from ``The World's Shortest R Tutorial", which can be found here \url{https://statnet.csde.washington.edu/trac/raw-attachment/wiki/Resources/statnet_polnet2011_ergm.pdf} and elsewhere.} and contains a brief introduction to {\tt R} syntax and commands that you might find useful throughout the class. This is largely meant to be used as a resource to learn R and look back on through out the course.
+
+\subsection*{Introduction to basic R syntax}
+<<>>=
+a <- 3							# assignment
+a								# evaluation
+
+sqrt(a)						# perform an operation
+b <- sqrt(a)						# perform operation and save
+b							
+
+a == a                                         # A is A?           
+a != b                                         # A is not B
+
+ls()	# list objects in global environment
+#help(sqrt)						# help w/ functions
+#?sqrt							# same thing
+#help.start()						# lots of help
+#help.search("sqrt")					# what am I looking for?
+#apropos("sqr")					# it's on the tip of my tongue...
+
+rm(a)							# remove an object
+@
+
+\subsection*{Vectors and matrices in R}
+
+<<>>=
+# Creating vectors using the concatenation operator
+a <- c(1,3,5)						# create a vector by concatenation
+a
+a[2]								# select the second element
+b <- c("one","three","five")			# also works with strings
+b
+b[2]
+a <- c(a,a)						# can apply recursively
+a
+a <- c(a,b)						# mixing types - who will win?
+a								# there can be only one!
+
+# Sequences and replication
+a <- seq(from=1,to=5,by=1)				# from 1 to 5 the slow way
+b <- 1:5						# a shortcut!
+a==b								# all TRUE
+rep(1,5)						# a lot of 1s
+rep(1:5,2)						# repeat an entire sequence
+rep(1:5,each=2)					# same, but element-wise
+rep(1:5,times=5:1)					# can vary the count of each element
+
+# Any and all (with vectors)
+a <- 1:5						# create a vector
+a>2								# some TRUE, some FALSE
+any(a>2)						# are any elements TRUE?
+all(a>2)						# are all elements TRUE?
+
+# From vectors to matrices
+a <- matrix(1:25, nr=5, nc=5)			# create a matrix the "formal" way
+a
+a[1,2]							# select a matrix element (two dimensions)
+a[1,]							# shortcut for ith row
+all(a[1,]==a[1,1:5])				# show the equivalence
+a[,2]							# can also perform for columns
+a[2:3,3:5]						# select submatrices
+a[-1,]							# nice trick: negative numbers omit cells!
+a[-2,-2]						# get rid of number two
+
+b <- cbind(1:5,1:5)					# another way to create matrices
+b
+d <- rbind(1:5,1:5)					# can perform with rows, too
+d
+try(cbind(b,d))						# no go: must have compatible dimensions!
+dim(b)							# what were those dimensions, anyway?
+dim(d)
+NROW(b)
+NCOL(b)
+cbind(b,b)						# here's a better example
+
+t(b)								# can transpose b
+cbind(t(b),d)						# now it works
+@
+
+\subsection*{Element-wise operations}
+
+<<>>=
+# Most arithmetic operators are applied element-wise
+a <- 1:5
+a + 1							# addition
+a * 2							# multiplication
+a / 3							# division
+a - 4							# subtraction
+a ^ 5							# you get the idea...
+
+a + a							# also works on pairs of vectors
+a * a
+a %*% a						# note, not element-wise!
+a + 1:6						# problem: need same length
+
+a <- rbind(1:5,2:6)					# same principles apply to matrices
+b <- rbind(3:7,4:8)
+a + b
+a / b
+
+a %*% t(b)						# matrix multiplication
+
+# Logical operators (generally) work like arithmetic ones
+a > 0
+a == b
+a != b
+!(a == b)
+(a>2) | (b>4)
+(a>2) & (b>4)
+(a>2) || (b>4)					# beware the "double-pipe"!
+(a>2) && (b>4)					# (and the "double-ampersand"!)
+
+# Ditto for many other basic transformations
+log(a)
+exp(b)
+sqrt(a+b)						# note that we can nest statements!
+log((sqrt(a+b)+a)*b)				# as recursive as we wanna be
+@
+
+\subsection*{Lists, data frames, and arrays}
+
+<<>>=
+# R has many other data types.  One important type is the list.
+a <- list(1:5)
+a								# not an ordinary vector...
+a <- list(1:5,letters[1:3])			# can we mix types and lengths?
+a								# yes!
+b <- matrix(1:3,3,3)
+a <- list(1:5,letters[1:3],b)			# anything can be stuffed in here
+a
+a[[1]]							# retrieve the first item
+a[[2]][3]						# the letter "c"
+(a[[3]])[1,3]						# it's really just recursion again
+a <- list(boo=1:4,hoo=5)				# list elements are often named
+names(a)						# get the element names
+a[["boo"]]						# ask for it by name
+a$hoo							# use "$" to get what you want
+# a+3								# whoops - not a vector!
+a[[1]]+3						# that works
+a[[2]] <- a[[2]]*4					# can also perform assignment
+a$woo <- "glorp"					# works with "$"
+a[["foo"]] <- "shazam"				# prolonging the magic
+a								
+
+# Another useful generalization: the data frame
+d <- data.frame(income=1:5,sane=c(T,T,T,T,F),name=LETTERS[1:5])  # Store multiple types
+d
+d[1,2]							# acts a lot like a matrix!
+d[,1]*5
+d[-1,]
+names(d)						# also acts like a list
+d[[2]]
+d$sane[3]<-FALSE
+d
+d[2,3]							# hmm - our data got factorized!
+d$name <- LETTERS[1:5]				# eliminate evil factors by overwriting
+d[2,3]
+d <- data.frame(income=1:5,sane=c(T,T,T,T,F),name=LETTERS[1:5],stringsAsFactors=FALSE)
+d								# another way to fix it
+
+d <- as.data.frame(cbind(1:5,2:6))		# can create from matrices
+d
+is.data.frame(d)					# how can we tell it's not a matrix?
+is.matrix(d)						# the truth comes out
+
+# When two dimensions are not enough: arrays
+a <- array(1:18, dim=c(2,3,3))			# now in 3D
+a
+a[1,2,3]						# selection works like a matrix
+a[1,2,]
+a[1,,]
+a[-1,2:3,1:2]
+a*5								# ditto for element-wise operations
+a <- array(dim=c(2,3,2,5,6))			# can have any number of dimensions
+dim(a)							# find out what we've allocated
+@
+
+\subsection*{Finding built-in data sets}
+
+<<>>=
+# Many packages have built-in data for testing and educational purposes
+#data()							# list them all
+#data(package="base")				# all base package
+#?USArrests						# get help on a data set
+data(USArrests)					# load the data set
+head(USArrests)						# view the object
+@
+
+\subsection*{Elementary visualization}
+
+<<fig=TRUE>>=
+# R's workhorse is the "plot" command
+plot(USArrests$Murder,USArrests$UrbanPop)
+@
+
+<<fig=TRUE>>=
+plot(USArrests$Murder,USArrests$UrbanPop,log="xy")	# log-log scale
+@
+
+<<fig=TRUE>>=
+plot(USArrests$Murder,USArrests$Assault,xlab="Murder",ylab="Assault",main="My Plot")
+@
+\setkeys{Gin}{width=1\textwidth}
+<<fig=TRUE>>=
+# Can also add text
+plot(USArrests$Murder,USArrests$Assault,xlab="Murder",ylab="Assault",main="My Plot",type="n")
+text(USArrests$Murder,USArrests$Assault,rownames(USArrests),cex=.5)
+@
+
+\setkeys{Gin}{width=.5\textwidth}
+<<fig=TRUE>>=
+# Histograms and boxplots are often helpful
+hist(USArrests$Murder)
+@
+
+<<fig=TRUE>>=
+boxplot(USArrests)
+@
+\subsection*{Reading in data (and writing to disk) ** Not required for Lab 1**}
+\begin{verbatim}
+# We won't use them right now, but here are some useful commands:
+?read.table							# a workhorse routine
+?read.csv							# a specialized CSV version
+?scan								# a more low-level variant
+apropos("read")						# list various "read" commands
+?load								# loads objects in native R format
+?save								# saves objects in native R format
+?write.table							# counterpart to read.table
+apropos("write")						# various "write" functions
+\end{verbatim}
+
+
+
+\end{document}
